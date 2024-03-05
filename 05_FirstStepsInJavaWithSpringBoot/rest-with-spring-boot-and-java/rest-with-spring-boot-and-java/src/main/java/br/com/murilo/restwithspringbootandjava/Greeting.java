@@ -1,4 +1,4 @@
-package br.com.murilo;
+package br.com.murilo.restwithspringbootandjava;
 
 public class Greeting {
     private final long id;
