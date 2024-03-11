@@ -1,15 +1,18 @@
-package br.com.murilo.restwithspringbootandjava;
+package br.com.murilo.restwithspringbootandjava.controllers;
 import br.com.murilo.restwithspringbootandjava.exceptions.UnsupportedMathOperationException;
+import br.com.murilo.restwithspringbootandjava.math.SimpleMath;
 import org.springframework.web.bind.annotation.*;
 import java.lang.Math;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import static br.com.murilo.restwithspringbootandjava.converters.NumberConverter.convertToDouble;
+import static br.com.murilo.restwithspringbootandjava.converters.NumberConverter.isNumeric;
+
 @RestController
 public class MathController {
-
-    private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
+    private SimpleMath math = new SimpleMath();
 
     @RequestMapping(value = "/sum/{numberOne}/{numberTwo}", method = RequestMethod.GET)
     public Double sum(
@@ -19,7 +22,7 @@ public class MathController {
         if(!isNumeric(numberOne) || !isNumeric(numberTwo)){
             throw new UnsupportedMathOperationException("Please set a numeric value");
         }
-        return convertToDouble(numberOne) + convertToDouble(numberTwo);
+        return math.sum(convertToDouble(numberOne), convertToDouble(numberTwo));
     }
     @RequestMapping(value = "/diff/{numberOne}/{numberTwo}", method = RequestMethod.GET)
     public Double diff(
@@ -29,7 +32,7 @@ public class MathController {
         if(!isNumeric(numberOne) || !isNumeric(numberTwo)){
             throw new UnsupportedMathOperationException("Please set a numeric value");
         }
-        return convertToDouble(numberOne) - convertToDouble(numberTwo);
+        return math.diff(convertToDouble(numberOne), convertToDouble(numberTwo));
     }
     @RequestMapping(value = "/mult/{numberOne}/{numberTwo}", method = RequestMethod.GET)
     public Double mult(
@@ -39,7 +42,7 @@ public class MathController {
         if(!isNumeric(numberOne) || !isNumeric(numberTwo)){
             throw new UnsupportedMathOperationException("Please set a numeric value");
         }
-        return convertToDouble(numberOne) * convertToDouble(numberTwo);
+        return math.mult(convertToDouble(numberOne), convertToDouble(numberTwo));
     }
     @RequestMapping(value = "/div/{numberOne}/{numberTwo}", method = RequestMethod.GET)
     public Double div(
@@ -49,7 +52,7 @@ public class MathController {
         if(!isNumeric(numberOne) || !isNumeric(numberTwo)){
             throw new UnsupportedMathOperationException("Please set a numeric value");
         }
-        return convertToDouble(numberOne) / convertToDouble(numberTwo);
+        return math.div(convertToDouble(numberOne), convertToDouble(numberTwo));
     }
     @RequestMapping(value = "/avg/{numberOne}/{numberTwo}", method = RequestMethod.GET)
     public Double avg(
@@ -59,7 +62,7 @@ public class MathController {
         if(!isNumeric(numberOne) || !isNumeric(numberTwo)){
             throw new UnsupportedMathOperationException("Please set a numeric value");
         }
-        return (convertToDouble(numberOne) + convertToDouble(numberTwo))/2;
+        return math.avg(convertToDouble(numberOne), convertToDouble(numberTwo));
     }
     @RequestMapping(value = "/sqrt/{number}", method = RequestMethod.GET)
     public Double sqrt(
@@ -69,17 +72,7 @@ public class MathController {
             throw new UnsupportedMathOperationException("Please set a numeric value");
         }
 
-        return Math.sqrt(convertToDouble(number));
+        return math.sqrt(convertToDouble(number));
     }
-    private Double convertToDouble(String strNumber) {
-        if (strNumber == null) return 0D;
-        String number = strNumber.replaceAll(",",".");
-        if (isNumeric(number)) return Double.parseDouble(number);
-        return 0D;
-    }
-        private boolean isNumeric(String strNumber) {
-            if (strNumber == null) return false;
-            String number = strNumber.replaceAll(",",".");
-            return number.matches("[-+]?[0-9]*\\.?[0-9]+");
-        }
+
 }
